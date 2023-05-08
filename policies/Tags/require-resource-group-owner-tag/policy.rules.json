@@ -1,0 +1,25 @@
+{
+    "policyRule": {
+        "if": {
+            "allOf": [
+                {
+                    "field": "type",
+                    "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                },
+                {
+                    "field": "[concat('tags[', parameters('environment'), ']')]",
+                    "notIn": "[parameters('environmentValues')]"
+                }
+            ]
+        },
+        "then": {
+            "effect": "append",
+            "details": [
+                {
+                    "field": "[concat('tags[', parameters('owner'), ']')]",
+                    "value": "[parameters('ownerValue')]"
+                }
+            ]
+        }
+    }
+}

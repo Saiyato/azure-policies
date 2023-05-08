@@ -1,0 +1,54 @@
+{
+  "properties": {
+    "displayName": "require-resource-group-environment-tag",
+    "description": "This policy requires Resource Groups to be created with an environment tag.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "category": "Tags"
+    },
+    "parameters": {
+      "environment": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Environment",
+          "description": "Name of the tag"
+        },
+        "defaultValue": "environment"
+      },
+      "environmentValues": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Environment",
+          "description": "To what environment does this resource belong: Development, Test, Acceptance or Production?"
+        },
+        "defaultValue": [
+          "Development",
+          "Test",
+          "Acceptance",
+          "Production"
+        ]
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('environment'), ']')]",
+            "notIn": "[parameters('environmentValues')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    },
+    "id": "/providers/Microsoft.Authorization/policyDefinitions/b65b302d-b4eb-4e5a-8bf7-0f452559061f",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "b65b302d-b4eb-4e5a-8bf7-0f452559061f"
+  }
+}

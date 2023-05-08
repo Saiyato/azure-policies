@@ -1,0 +1,55 @@
+{
+  "properties": {
+    "displayName": "require-resource-group-owner-tag",
+    "description": "This policy requires Resource Groups to be created with an owner tag.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "category": "Tags"
+    },
+    "parameters": {
+      "owner": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Owner",
+          "description": "Name of the tag"
+        },
+        "defaultValue": "owner"
+      },
+      "ownerValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Environment",
+          "description": "Who is the owner of this resource? Please supply a valid email address."
+        },
+        "defaultValue": "owner@domain.tld"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('owner'), ']')]",
+            "exists": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "append",
+        "details": [
+          {
+            "field": "[concat('tags[', parameters('owner'), ']')]",
+            "value": "[parameters('ownerValue')]"
+          }
+        ]
+      }
+    },
+    "id": "/providers/Microsoft.Authorization/policyDefinitions/ad22db21-afc1-4562-8511-0dfe048c591b",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "ad22db21-afc1-4562-8511-0dfe048c591b"
+  }
+}

@@ -1,0 +1,39 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "not": {
+                    "field": "name",
+                    "match": "[concat(parameters('namePattern'), '-??')]"
+                }
+            },
+            {
+                "not": {
+                    "field": "name",
+                    "match": "[concat(parameters('namePattern'), '-???')]"
+                }
+            },
+            {
+                "not": {
+                    "field": "name",
+                    "match": "[concat(parameters('namePattern'), '-????')]"
+                }
+            },
+            {
+                "not": {
+                    "field": "name",
+                    "match": "[concat(parameters('namePattern'), '-?????')]"
+                }
+            },
+            {
+                "not": {
+                    "field": "name",
+                    "match": "[concat(parameters('namePattern'), '-??????')]"
+                }
+            }
+        ]
+    },
+    "then": {
+        "effect": "deny"
+    }
+}

@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "displayName": "simple-naming-convention",
+    "policyType": "Custom",
+    "description": "This policy forces a unified naming convention for all resources. Resource type suffixes (-> -vm, -aks, etc.) are implied in this policy, they can be between 2 and 6 characters long as per Microsoft Azure Naming Tool. Source: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+    "metadata": {
+      "category": "Naming"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "namePattern": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Name Pattern",
+          "description": "Pattern to use for naming can include the following tokens: '?' for letters, '#' for numbers and '.' for a single wildcard."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('namePattern'), '-??')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('namePattern'), '-???')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('namePattern'), '-????')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('namePattern'), '-?????')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('namePattern'), '-??????')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  },
+  "id": "/providers/Microsoft.Authorization/policyDefinitions/9fbd671b-d61a-44d3-9103-b97b01aa1f0f",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "9fbd671b-d61a-44d3-9103-b97b01aa1f0f"
+}

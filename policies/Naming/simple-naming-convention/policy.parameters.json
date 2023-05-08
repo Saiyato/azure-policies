@@ -1,0 +1,11 @@
+{
+    "parameters": {
+        "namePattern": {
+            "type": "String",
+            "metadata": {
+                "displayName": "Name Pattern",
+                "description": "Pattern to use for naming can include the following tokens: '?' for letters, '#' for numbers and '.' for a single wildcard."
+            }
+        }
+    }
+}

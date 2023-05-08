@@ -1,0 +1,55 @@
+{
+  "properties": {
+    "displayName": "require-resource-group-service-provider-tag",
+    "description": "This policy requires Resource Groups to be created with a Service Provider tag.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "category": "Tags"
+    },
+    "parameters": {
+      "serviceProvider": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Service Provider",
+          "description": "Name of the tag"
+        },
+        "defaultValue": "serviceProvider"
+      },
+      "serviceProviderValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Service Provider",
+          "description": "Which Service Provider supports this resource?"
+        },
+        "defaultValue": "GSI"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('serviceProvider'), ']')]",
+            "exists": false
+          }
+        ]
+      },
+      "then": {
+        "effect": "append",
+        "details": [
+          {
+            "field": "[concat('tags[', parameters('serviceProvider'), ']')]",
+            "value": "[parameters('serviceProviderValue')]"
+          }
+        ]
+      }
+    },
+    "id": "/providers/Microsoft.Authorization/policyDefinitions/7d89001a-60c7-448e-b930-48719e42e270",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "7d89001a-60c7-448e-b930-48719e42e270"
+  }
+}
