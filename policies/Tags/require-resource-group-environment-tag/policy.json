@@ -1,6 +1,9 @@
 {
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "require-resource-group-environment-tag",
+  "apiVersion": "2021-06-01",
   "properties": {
-    "displayName": "require-resource-group-environment-tag",
+    "displayName": "Enforce using environment tag when deploying Resource Groups",
     "description": "This policy requires Resource Groups to be created with an environment tag.",
     "policyType": "Custom",
     "mode": "All",
@@ -9,7 +12,7 @@
     },
     "parameters": {
       "environment": {
-        "type": "String",
+        "type": "string",
         "metadata": {
           "displayName": "Environment",
           "description": "Name of the tag"
@@ -17,7 +20,7 @@
         "defaultValue": "environment"
       },
       "environmentValues": {
-        "type": "Array",
+        "type": "array",
         "metadata": {
           "displayName": "Environment",
           "description": "To what environment does this resource belong: Development, Test, Acceptance or Production?"
@@ -46,9 +49,6 @@
       "then": {
         "effect": "deny"
       }
-    },
-    "id": "/providers/Microsoft.Authorization/policyDefinitions/b65b302d-b4eb-4e5a-8bf7-0f452559061f",
-    "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "b65b302d-b4eb-4e5a-8bf7-0f452559061f"
+    }    
   }
 }
