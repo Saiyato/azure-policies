@@ -1,54 +1,65 @@
 {
-  "type": "Microsoft.Authorization/policyDefinitions",
-  "name": "require-resource-group-environment-tag",
-  "apiVersion": "2021-06-01",
-  "properties": {
-    "displayName": "Enforce using environment tag when deploying Resource Groups",
-    "description": "This policy requires Resource Groups to be created with an environment tag.",
-    "policyType": "Custom",
-    "mode": "All",
-    "metadata": {
-      "category": "Tags"
-    },
-    "parameters": {
-      "environment": {
-        "type": "string",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "policyName": "require-resource-group-environment-tag",
+    "policyDisplayName": "Enforce using environment tag when deploying Resource Groups",
+    "policyDescription": "This policy requires Resource Groups to be created with an environment tag."
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/policyDefinitions",
+      "name": "[variables('policyName')]",
+      "apiVersion": "2021-06-01",
+      "properties": {
+        "displayName": "[variables('policyDisplayName')]",
+        "description": "[variables('policyDescription')]",
+        "policyType": "Custom",
+        "mode": "All",
         "metadata": {
-          "displayName": "Environment",
-          "description": "Name of the tag"
+          "category": "Tags"
         },
-        "defaultValue": "environment"
-      },
-      "environmentValues": {
-        "type": "array",
-        "metadata": {
-          "displayName": "Environment",
-          "description": "To what environment does this resource belong: Development, Test, Acceptance or Production?"
-        },
-        "defaultValue": [
-          "Development",
-          "Test",
-          "Acceptance",
-          "Production"
-        ]
-      }
-    },
-    "policyRule": {
-      "if": {
-        "allOf": [
-          {
-            "field": "type",
-            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+        "parameters": {
+          "environment": {
+            "type": "string",
+            "metadata": {
+              "displayName": "Environment",
+              "description": "Name of the tag"
+            },
+            "defaultValue": "environment"
           },
-          {
-            "field": "[concat('tags[', parameters('environment'), ']')]",
-            "notIn": "[parameters('environmentValues')]"
+          "environmentValues": {
+            "type": "array",
+            "metadata": {
+              "displayName": "Environment",
+              "description": "To what environment does this resource belong: Development, Test, Acceptance or Production?"
+            },
+            "defaultValue": [
+              "Development",
+              "Test",
+              "Acceptance",
+              "Production"
+            ]
           }
-        ]
-      },
-      "then": {
-        "effect": "deny"
+        },
+        "policyRule": {
+          "if": {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+              },
+              {
+                "field": "[concat('tags[', parameters('environment'), ']')]",
+                "notIn": "[parameters('environmentValues')]"
+              }
+            ]
+          },
+          "then": {
+            "effect": "deny"
+          }
+        }
       }
-    }    
-  }
+    }
+  ]
 }
