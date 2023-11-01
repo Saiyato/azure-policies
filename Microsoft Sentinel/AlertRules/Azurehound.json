@@ -21,7 +21,7 @@
         "query": "MicrosoftGraphActivityLogs\n| where UserAgent has \"azurehound\"\n| summarize QueriesSent=count() by UserId, IPAddress, ServicePrincipalId, AppId, TokenIssuedAt, Location, SignInActivityId, SourceSystem, AadTenantId, UserAgent\n| extend ConfidenceScore = 1\n| extend RemediationSteps = \"Identify the identity and device used for this activity and confirm this is not a security test. If you can rule out a security test initiate the  incident response process to decide if the attacker can be evicted or should be observed\"",
         "suppressionDuration": "PT5H",
         "suppressionEnabled": false,
-        "alertRuleTemplateName": "54b355e7-1736-425e-8627-4972161b135a",
+        "alertRuleTemplateName": "rule-azurehound",
         "incidentConfiguration": {
           "createIncident": true,
           "groupingConfiguration": {
