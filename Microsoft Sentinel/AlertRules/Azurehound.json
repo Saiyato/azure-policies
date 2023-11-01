@@ -6,13 +6,10 @@
       "type": "String"
     }
   },
-  "variables": {
-    "ruleId": "54b355e7-1736-425e-8627-4972161b135a"
-  },
   "resources": [
     {
       "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/54b355e7-1736-425e-8627-4972161b135a')]",
-      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/, variables('ruleId')')]",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/54b355e7-1736-425e-8627-4972161b135a')]",
       "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
       "kind": "NRT",
       "apiVersion": "2022-11-01-preview",
@@ -24,7 +21,7 @@
         "query": "MicrosoftGraphActivityLogs\n| where UserAgent has \"azurehound\"\n| summarize QueriesSent=count() by UserId, IPAddress, ServicePrincipalId, AppId, TokenIssuedAt, Location, SignInActivityId, SourceSystem, AadTenantId, UserAgent\n| extend ConfidenceScore = 1\n| extend RemediationSteps = \"Identify the identity and device used for this activity and confirm this is not a security test. If you can rule out a security test initiate the  incident response process to decide if the attacker can be evicted or should be observed\"",
         "suppressionDuration": "PT5H",
         "suppressionEnabled": false,
-        "alertRuleTemplateName": "[variables('ruleId')]",
+        "alertRuleTemplateName": "54b355e7-1736-425e-8627-4972161b135a",
         "incidentConfiguration": {
           "createIncident": true,
           "groupingConfiguration": {
@@ -75,6 +72,11 @@
             "entityType": "IP"
           }
         ],
+        "tags": [
+          "Azure",
+          "Community-Rule"
+        ],
+        "status": "Available",
         "templateVersion": "1.0.0"
       }
     }
