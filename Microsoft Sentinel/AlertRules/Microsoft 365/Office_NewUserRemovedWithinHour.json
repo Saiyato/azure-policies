@@ -1,0 +1,56 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspace": {
+      "type": "String"
+    }
+  },
+  "resources": [
+    {
+      "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/bff093b2-500e-4ae5-bb49-a5b1423cbd5b')]",
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/bff093b2-500e-4ae5-bb49-a5b1423cbd5b')]",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "kind": "Scheduled",
+      "apiVersion": "2022-11-01-preview",
+      "properties": {
+        "displayName": "External user added and removed in short timeframe",
+        "description": "'This detection flags the occurances of external user accounts that are added to a Team and then removed within\none hour.'\n",
+        "severity": "Low",
+        "enabled": true,
+        "query": "let TeamsAddDel = (Op:string){\nOfficeActivity\n| where OfficeWorkload =~ \"MicrosoftTeams\"\n| where Operation == Op\n| where Members has (\"#EXT#\")\n| mv-expand Members\n| extend UPN = tostring(Members.UPN)\n| where UPN has (\"#EXT#\")\n| project TimeGenerated, Operation, UPN, UserId, TeamName\n};\nlet TeamsAdd = TeamsAddDel(\"MemberAdded\")\n| project TimeAdded=TimeGenerated, Operation, UPN, UserWhoAdded = UserId, TeamName;\nlet TeamsDel = TeamsAddDel(\"MemberRemoved\")\n| project TimeDeleted=TimeGenerated, Operation, UPN, UserWhoDeleted = UserId, TeamName;\nTeamsAdd\n| join kind=inner (TeamsDel) on UPN\n| where TimeDeleted > TimeAdded\n| project TimeAdded, TimeDeleted, UPN, UserWhoAdded, UserWhoDeleted, TeamName\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "tactics": [
+          "Persistence"
+        ],
+        "techniques": [
+          "T1136"
+        ],
+        "alertRuleTemplateName": "bff093b2-500e-4ae5-bb49-a5b1423cbd5b",
+        "customDetails": null,
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "UPN"
+              }
+            ],
+            "entityType": "Account"
+          }
+        ],
+        "status": "Available",
+        "tags": [
+          "M365",
+          "Community-Role"
+        ],
+        "templateVersion": "2.0.0"
+      }
+    }
+  ]
+}
