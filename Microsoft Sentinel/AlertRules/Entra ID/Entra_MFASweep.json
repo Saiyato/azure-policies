@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/f528edda-a5e0-409f-960b-7aad4d3d81a3')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/f528edda-a5e0-409f-960b-7aad4d3d81a3')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2022-11-01-preview",
+            "properties": {
+                "displayName": "Detect MFASweep usage",
+                "description": "This rule will trigger once MFASweep is used against an existing account\n",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let Apps = dynamic([\n  \"1b730954-1685-4b74-9bfd-dac224a7b894\", // Azure Active Directory PowerShell\n  \"1950a258-227b-4e31-a9cf-717495945fc2\", // Microsoft Azure PowerShell\n  \"00000002-0000-0ff1-ce00-000000000000\"  // Office 365 Exchange Online\n]);\nlet Auths = dynamic([\n  \"Exchange ActiveSync\",\n  \"Browser\",\n  \"Exchange Web Services\",\n  \"Mobile Apps and Desktop clients\"\n]);\nSigninLogs \n| where AppId in (Apps)\n| extend ClientAppUsed\n| where ClientAppUsed in (Auths)\n| summarize StartTime = min(TimeGenerated), EndTime = max(TimeGenerated), count() by ClientAppUsed, Identity, AlternateSignInName, ResultType, ResultDescription\n| where (ClientAppUsed == \"Browser\" and count_ >= 2)\n  or (ClientAppUsed == \"Exchange ActiveSync\" and count_ >= 1)\n  or (ClientAppUsed == \"Mobile Apps and Desktop clients\" and count_ >= 2)\n  or (ClientAppUsed == \"Exchange Web Services\" and count_ >= 1)\n| summarize StartTime = min(StartTime), EndTime = max(EndTime), count() by Identity, AlternateSignInName, ResultType, ResultDescription\n| where count_ == 4\n",
+                "queryFrequency": "PT5M",
+                "queryPeriod": "PT5M",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": false,
+                "startTimeUtc": null,
+                "tactics": [
+                    "InitialAccess"
+                ],
+                "techniques": [
+                    "T1078",
+                    "T0819"
+                ],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [
+                            "Account",
+                            "IP",
+                            "Host",
+                            "URL",
+                            "FileHash"
+                        ],
+                        "groupByAlertDetails": null,
+                        "groupByCustomDetails": null
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": null,
+                "sentinelEntitiesMappings": null,
+                "status": "Available",
+                "tags": [
+                    "Entra",
+                    "Community-Rule",
+                    "NeedsPaidSources"
+                ],
+                "templateVersion": "1.0.0"
+            }
+        }
+    ]
+}

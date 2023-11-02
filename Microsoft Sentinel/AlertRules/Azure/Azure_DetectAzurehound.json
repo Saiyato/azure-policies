@@ -72,11 +72,11 @@
             "entityType": "IP"
           }
         ],
+        "status": "Available",
         "tags": [
           "Azure",
           "Community-Rule"
         ],
-        "status": "Available",
         "templateVersion": "1.0.0"
       }
     }
