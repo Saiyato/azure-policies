@@ -33,7 +33,7 @@
                     "T1078",
                     "T0819"
                 ],
-                "alertRuleTemplateName": null,
+                "alertRuleTemplateName": "entra-detect-mfa-sweep",
                 "incidentConfiguration": {
                     "createIncident": true,
                     "groupingConfiguration": {

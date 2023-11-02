@@ -29,7 +29,7 @@
           "DefenseEvasion"
         ],
         "techniques": [
-          "T1578.003"
+          "T1578"
         ],
         "alertRuleTemplateName": "86a036b2-3686-42eb-b417-909fc0867771",
         "customDetails": null,
